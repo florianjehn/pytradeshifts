@@ -9,9 +9,9 @@ Australia,4.42
 Austria,-5.78
 Azerbaijan,-3.17
 Bangladesh,-6.72
-Belarus,48.23
+Belarus,23.235
 Belgium,3.14
-Belize,28.39
+Belize,23.235
 Bhutan,0.93
 Bolivia,1.14
 Bosnia and Herzegovina,-0.02
@@ -29,12 +29,12 @@ Colombia,-2.61
 Croatia,8.47
 Cyprus,-7.88
 Czech Republic,-7.21
-Denmark,27.24
+Denmark,23.235
 Djibouti,-16.29
 Ecuador,-2.66
 Egypt,-1.51
 Eritrea,11.99
-Estonia,50.0
+Estonia,23.235
 Ethiopia,-6.66
 Finland,-47.72
 France,-4.22
@@ -42,7 +42,7 @@ Georgia,9.3
 Germany,1.32
 Greece,-8.09
 Guatemala,14.64
-Guernsey,24.21
+Guernsey,23.235
 Hungary,10.17
 Iceland,-87.48
 India,-8.7
@@ -53,7 +53,7 @@ Isle of Man,-5.05
 Israel,-4.99
 Italy,-5.47
 Japan,-2.69
-Jersey,26.14
+Jersey,23.235
 Jordan,-7.08
 Kazakhstan,-4.77
 Kenya,-8.67
@@ -61,11 +61,11 @@ Kosovo,-16.77
 Kuwait,-3.43
 Kyrgyzstan,-1.97
 Laos,-10.25
-Latvia,50.0
+Latvia,23.235
 Lebanon,-6.98
 Lesotho,-22.1
 Libya,-4.57
-Lithuania,50.0
+Lithuania,23.235
 Luxembourg,-2.99
 Macedonia,-14.39
 Malawi,-13.92
@@ -89,7 +89,7 @@ Oman,-64.83
 Pakistan,-7.07
 Paraguay,3.86
 Peru,1.68
-Poland,38.41
+Poland,23.235
 Portugal,-0.85
 Romania,10.61
 Russia,3.78
@@ -97,7 +97,7 @@ Saudi Arabia,1.11
 Serbia,-8.55
 Slovakia,12.94
 Slovenia,3.79
-Somalia,39.66
+Somalia,23.235
 South Africa,-14.57
 South Korea,-8.39
 South Sudan,0.02

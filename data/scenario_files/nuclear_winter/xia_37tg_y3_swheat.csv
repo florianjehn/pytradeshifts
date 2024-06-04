@@ -1,7 +1,7 @@
 nation-name,37tg
 Afghanistan,-28.35
-Albania,50.0
-Algeria,50.0
+Albania,63.3
+Algeria,100.9475
 Angola,-80.79
 Argentina,-23.09
 Armenia,-9.36
@@ -11,10 +11,10 @@ Azerbaijan,-20.5
 Bangladesh,10.75
 Belarus,-97.11
 Belgium,-55.25
-Belize,50.0
+Belize,73.94
 Bhutan,-79.0
 Bolivia,-32.63
-Bosnia and Herzegovina,50.0
+Bosnia and Herzegovina,70.07
 Botswana,-64.88
 Brazil,-27.65
 Bulgaria,35.3
@@ -40,7 +40,7 @@ Finland,-100.0
 France,-19.29
 Georgia,-4.33
 Germany,-73.86
-Greece,50.0
+Greece,76.84
 Guatemala,18.76
 Guernsey,0.41
 Hungary,-23.36
@@ -64,7 +64,7 @@ Laos,-51.98
 Latvia,-100.0
 Lebanon,-4.1
 Lesotho,-17.02
-Libya,50.0
+Libya,66.17
 Lithuania,-100.0
 Luxembourg,-56.18
 Macedonia,48.87
@@ -73,8 +73,8 @@ Mali,-19.69
 Mexico,-37.92
 Moldova,-32.36
 Mongolia,-99.81
-Montenegro,50.0
-Morocco,50.0
+Montenegro,74.97
+Morocco,94.97
 Mozambique,16.65
 Myanmar,-28.24
 Namibia,-90.95
@@ -89,7 +89,7 @@ Pakistan,10.09
 Paraguay,-0.98
 Peru,-26.44
 Poland,-73.16
-Portugal,50.0
+Portugal,100.9475
 Romania,-13.53
 Russia,-92.89
 Saudi Arabia,17.86
@@ -100,7 +100,7 @@ Somalia,42.01
 South Africa,-16.44
 South Korea,-65.22
 South Sudan,-16.31
-Spain,50.0
+Spain,90.75
 Sudan,-14.03
 Swaziland,49.89
 Sweden,-100.0
@@ -109,7 +109,7 @@ Syria,-33.39
 Tajikistan,-56.59
 Tanzania,-58.5
 Thailand,-46.57
-Tunisia,50.0
+Tunisia,96.18
 Turkey,12.7
 Turkmenistan,-44.17
 Ukraine,-47.21

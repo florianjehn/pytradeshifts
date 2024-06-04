@@ -2,7 +2,7 @@ nation-name,16tg
 Afghanistan,-27.57
 Albania,5.12
 Algeria,-2.35
-Angola,49.31
+Angola,44.54
 Argentina,17.14
 Armenia,-10.98
 Australia,18.98
@@ -11,7 +11,7 @@ Azerbaijan,-19.91
 Bangladesh,14.89
 Belarus,32.05
 Belgium,-2.88
-Belize,50.0
+Belize,44.54
 Bhutan,-42.17
 Bolivia,-0.09
 Bosnia and Herzegovina,18.41
@@ -42,7 +42,7 @@ Georgia,-4.77
 Germany,-15.78
 Greece,4.07
 Guatemala,16.02
-Guernsey,50.0
+Guernsey,44.54
 Hungary,-9.4
 Iceland,-100.0
 India,-2.96
@@ -53,7 +53,7 @@ Isle of Man,-28.33
 Israel,3.77
 Italy,-9.96
 Japan,-43.52
-Jersey,50.0
+Jersey,44.54
 Jordan,1.72
 Kazakhstan,-20.28
 Kenya,-54.08
@@ -64,7 +64,7 @@ Laos,-52.26
 Latvia,2.21
 Lebanon,-5.84
 Lesotho,1.86
-Libya,50.0
+Libya,44.54
 Lithuania,30.65
 Luxembourg,-16.45
 Macedonia,9.43
@@ -90,18 +90,18 @@ Pakistan,4.62
 Paraguay,-1.86
 Peru,-12.46
 Poland,1.03
-Portugal,50.0
+Portugal,44.54
 Romania,6.57
 Russia,-49.23
 Saudi Arabia,-7.15
 Serbia,12.81
 Slovakia,-12.23
 Slovenia,0.35
-Somalia,50.0
+Somalia,44.54
 South Africa,-3.68
 South Korea,-42.03
 South Sudan,-0.17
-Spain,50.0
+Spain,44.54
 Sudan,27.34
 Swaziland,7.68
 Sweden,-83.91
@@ -123,4 +123,4 @@ Venezuela,-0.59
 Vietnam,-41.84
 Yemen,36.99
 Zambia,4.89
-Zimbabwe,45.94
+Zimbabwe,44.54
