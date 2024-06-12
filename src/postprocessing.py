@@ -241,7 +241,7 @@ class Postprocessing:
                 ax,
                 scenario,
                 self.imports_difference[idx],
-                "Import relative difference",
+                "Import relative difference [%]",
                 shrink=shrink,
                 **kwargs,
             )
@@ -1264,6 +1264,9 @@ class Postprocessing:
         figsize: tuple[float, float] | None = None,
         file_path: str | None = None,
         file_format="png",
+        countries_to_highlight: list[str] | None = None,
+        offset_x: float = 0,
+        offset_y: float = 0,
         dpi=300,
         **kwargs,
     ) -> None:
@@ -1294,6 +1297,10 @@ class Postprocessing:
                 should be saved to. If `None` no file shall be produced.
             file_format (str, optional): File extension to use when
                 saving plot to file.
+            countries_to_highlight (list[str] | None, optional): List of countries
+                to highlight in the plot.
+            offset_x (float, optional): x-axis offset for labels of the highlighted countries.
+            offset_y (float, optional): y-axis offset for labels of the highlighted countries.
             dpi (int, optional): DPI of the saved image file.
             **kwargs (optional): Any additional keyworded arguments recognised
                 by geopandas plot function.
@@ -1315,25 +1322,54 @@ class Postprocessing:
         except TypeError:
             axs = [axs]
         for ax, (idx, scenario) in zip(axs, enumerate(self.scenarios)):
+            # Make sure that countries are in the same order in both metrics by iterating over the countries
+            # Saving them to a list
+            countries_z = list(self.zscores[idx].keys())
+            countries_p = list(self.participation[idx].keys())
+            # Check if both lists contain the same countries
+            assert set(countries_z) == set(countries_p)
+            sorted_values_z = [self.zscores[idx][country] for country in countries_p]
+            sorted_values_p = [self.participation[idx][country] for country in countries_p]
+            # Scatter plot
             ax.scatter(
-                self.participation[idx].values(),
-                self.zscores[idx].values(),
+                sorted_values_p,
+                sorted_values_z,
                 zorder=5,
                 color="black",
                 alpha=0.8,
                 **kwargs,
             )
             ax.set_title(
-                f"Country roles for {scenario.crop} with base year {scenario.base_year[1:]}"
+                f"Country roles for {scenario.crop.lower()} with base year {scenario.base_year[1:]}"
                 + (
                     f"\nin scenario: {scenario.scenario_name}"
                     if scenario.scenario_name is not None
-                    else "\n(no scenario)"
+                    else ""
                 )
             )
             fill_sector_by_colour(
                 ax, z_threshold, p_thresholds, alpha, labels, fontsize
             )
+            if countries_to_highlight is not None:
+                for country in countries_to_highlight:
+                    try:
+                        ax.text(
+                            self.participation[idx][country] + offset_x,
+                            self.zscores[idx][country] + offset_y,
+                            country,
+                            fontsize=fontsize,
+                            zorder=10,
+                        )
+                        # highlight the country
+                        ax.scatter(
+                            self.participation[idx][country],
+                            self.zscores[idx][country],
+                            zorder=5,
+                            color="red",
+                            alpha=0.8,
+                        )
+                    except KeyError:
+                        print(f"Warning: {country} not found in the data.")
             ax.set_xlabel("Participation coefficient")
             ax.set_ylabel("Within community degree")
             # Turn off the grid
@@ -1778,7 +1814,7 @@ class Postprocessing:
                     removed_nodes,
                     eigenvalues,
                     "-",
-                    label=f"{idx}, export, {threshold}",
+                    label=f"{idx}, export-weighted, {threshold}",
                     color=colors[idx],
                     alpha=alpha,
                 )
