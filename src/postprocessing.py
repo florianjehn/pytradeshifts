@@ -1353,10 +1353,18 @@ class Postprocessing:
             if countries_to_highlight is not None:
                 for country in countries_to_highlight:
                     try:
-                        ax.text(
-                            self.participation[idx][country] + offset_x,
-                            self.zscores[idx][country] + offset_y,
+                        ax.annotate(
                             country,
+                            xy=(self.participation[idx][country], self.zscores[idx][country]),
+                            xytext=(self.participation[idx][country] + offset_x, self.zscores[idx][country] + offset_y),
+                            clip_on=True,
+                            bbox={
+                                'facecolor': 'white',
+                                'clip_on': True,
+                                'alpha': 0.85,
+                                'pad': 1,
+                                'edgecolor': 'none'
+                            },
                             fontsize=fontsize,
                             zorder=10,
                         )
@@ -1370,8 +1378,8 @@ class Postprocessing:
                         )
                     except KeyError:
                         print(f"Warning: {country} not found in the data.")
-            ax.set_xlabel("Participation coefficient")
-            ax.set_ylabel("Within community degree")
+            ax.set_xlabel("Participation coefficient (P)")
+            ax.set_ylabel("Within community degree (z)")
             # Turn off the grid
             ax.grid(False)
 
