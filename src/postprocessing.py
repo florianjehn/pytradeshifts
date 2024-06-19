@@ -1329,7 +1329,9 @@ class Postprocessing:
             # Check if both lists contain the same countries
             assert set(countries_z) == set(countries_p)
             sorted_values_z = [self.zscores[idx][country] for country in countries_p]
-            sorted_values_p = [self.participation[idx][country] for country in countries_p]
+            sorted_values_p = [
+                self.participation[idx][country] for country in countries_p
+            ]
             # Scatter plot
             ax.scatter(
                 sorted_values_p,
@@ -1355,15 +1357,21 @@ class Postprocessing:
                     try:
                         ax.annotate(
                             country,
-                            xy=(self.participation[idx][country], self.zscores[idx][country]),
-                            xytext=(self.participation[idx][country] + offset_x, self.zscores[idx][country] + offset_y),
+                            xy=(
+                                self.participation[idx][country],
+                                self.zscores[idx][country],
+                            ),
+                            xytext=(
+                                self.participation[idx][country] + offset_x,
+                                self.zscores[idx][country] + offset_y,
+                            ),
                             clip_on=True,
                             bbox={
-                                'facecolor': 'white',
-                                'clip_on': True,
-                                'alpha': 0.85,
-                                'pad': 1,
-                                'edgecolor': 'none'
+                                "facecolor": "white",
+                                "clip_on": True,
+                                "alpha": 0.85,
+                                "pad": 1,
+                                "edgecolor": "none",
                             },
                             fontsize=fontsize,
                             zorder=10,

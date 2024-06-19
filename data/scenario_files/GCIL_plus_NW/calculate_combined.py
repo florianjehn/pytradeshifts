@@ -21,7 +21,10 @@ for crop in crops:
     elif crop == "Maize":
         xia_naming = "corn"
     print("Reading data for nuclear winter")
-    nw = pd.read_csv(f"data{os.sep}scenario_files{os.sep}nuclear_winter{os.sep}xia_37tg_y3_{xia_naming}.csv", index_col=0)
+    nw = pd.read_csv(
+        f"data{os.sep}scenario_files{os.sep}nuclear_winter{os.sep}xia_37tg_y3_{xia_naming}.csv",
+        index_col=0,
+    )
 
     # Then read the data from the global catastrophic infrastructure loss scenario
     if crop == "Maize":
@@ -29,7 +32,10 @@ for crop in crops:
     else:
         crop_name = crop
     print("Reading data for global catastrophic infrastructure loss")
-    gcil = pd.read_csv(f"data{os.sep}scenario_files{os.sep}losing_industry{os.sep}{crop_name}2mean_values.csv", index_col=0)
+    gcil = pd.read_csv(
+        f"data{os.sep}scenario_files{os.sep}losing_industry{os.sep}{crop_name}2mean_values.csv",
+        index_col=0,
+    )
 
     # Change to fractions
     nw = nw / 100 + 1
@@ -38,9 +44,7 @@ for crop in crops:
     # Multiply the two dataframes together, but first make sure that the country names are unified
     cc = coco.CountryConverter()
     print("Converting country names for nuclear winter")
-    nw.index = cc.pandas_convert(
-        pd.Series(nw.index), to="name_short", not_found=None
-    )
+    nw.index = cc.pandas_convert(pd.Series(nw.index), to="name_short", not_found=None)
     print("Converting country names for global catastrophic infrastructure loss")
     gcil.index = cc.pandas_convert(
         pd.Series(gcil.index), to="name_short", not_found=None
@@ -54,7 +58,7 @@ for crop in crops:
     combined = combined.dropna()
     nw = nw.loc[combined.index]
     gcil = gcil.loc[combined.index]
-    
+
     combined = nw["37tg"] * gcil["mean_value"]
 
     # Change back to percentages
@@ -62,4 +66,6 @@ for crop in crops:
 
     # Save the combined data
     print("Saving the combined data")
-    combined.to_csv(f"data{os.sep}scenario_files{os.sep}GCIL_plus_NW{os.sep}combined_{crop}.csv")
+    combined.to_csv(
+        f"data{os.sep}scenario_files{os.sep}GCIL_plus_NW{os.sep}combined_{crop}.csv"
+    )
