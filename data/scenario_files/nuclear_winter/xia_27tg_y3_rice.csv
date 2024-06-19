@@ -1,6 +1,6 @@
 nation-name,27tg
 Afghanistan,-83.31
-Albania,50.0
+Albania,113.6
 Angola,-49.21
 Argentina,-46.77
 Armenia,-100.0
@@ -21,7 +21,7 @@ Cameroon,29.03
 Canada,-100.0
 Caspian Sea,-99.81
 Central African Republic,-1.21
-Chad,50.0
+Chad,56.92
 Chile,-53.99
 China,-76.4
 Colombia,-7.26
@@ -30,11 +30,11 @@ C??te d'Ivoire,31.6
 Cuba,-38.94
 Democratic Republic of the Congo,-20.7
 Djibouti,-35.01
-Dominican Republic,50.0
+Dominican Republic,58.35
 East Timor,-14.62
 Ecuador,-17.88
 Egypt,-42.02
-El Salvador,50.0
+El Salvador,68.79
 Ethiopia,-43.39
 Finland,-100.0
 France,-45.19
@@ -47,8 +47,8 @@ Greece,5.07
 Guatemala,44.81
 Guinea,6.18
 Guinea-Bissau,10.02
-Guyana,50.0
-Haiti,50.0
+Guyana,111.64
+Haiti,128.21625
 Honduras,48.15
 Iceland,-100.0
 India,-13.32
@@ -59,12 +59,12 @@ Italy,-40.97
 Japan,-86.13
 Kazakhstan,-99.07
 Kenya,-49.9
-Kosovo,50.0
+Kosovo,60.75
 Kuwait,-62.11
 Kyrgyzstan,-100.0
 Laos,-57.14
 Liberia,15.39
-Macedonia,50.0
+Macedonia,51.42
 Madagascar,-33.85
 Malawi,-52.76
 Malaysia,-14.66
@@ -78,16 +78,16 @@ Myanmar,-61.81
 Namibia,-92.24
 Nepal,-24.19
 Nicaragua,12.06
-Niger,50.0
+Niger,60.23
 Nigeria,31.49
 North Korea,-97.76
 Norway,-100.0
 Pakistan,-43.23
-Panama,50.0
+Panama,54.33
 Paraguay,-37.15
 Peru,-18.7
 Philippines,-15.04
-Portugal,50.0
+Portugal,61.06
 Republic of Congo,-14.61
 Russia,-100.0
 Rwanda,-60.48
@@ -95,14 +95,14 @@ Saudi Arabia,-100.0
 Senegal,2.27
 Sierra Leone,-4.51
 Singapore,-1.22
-Somalia,50.0
+Somalia,119.79
 South Africa,-55.97
 South Korea,-67.96
 South Sudan,-1.05
 Spain,20.73
 Sri Lanka,-5.39
-Sudan,50.0
-Suriname,50.0
+Sudan,96.75
+Suriname,128.21625
 Sweden,-100.0
 Switzerland,-83.95
 Syria,-87.96
@@ -117,7 +117,7 @@ Ukraine,-100.0
 United States,-72.59
 Uruguay,-47.92
 Uzbekistan,-93.56
-Venezuela,50.0
+Venezuela,53.31
 Vietnam,-44.67
 Zambia,-53.39
 Zimbabwe,-55.28

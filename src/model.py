@@ -813,11 +813,11 @@ class PyTradeShifts:
 
         # Add a title with self.scenario_name if applicable
         ax.set_title(
-            f"Trade communities for {self.crop} with base year {self.base_year[1:]}"
+            f"Trade communities for {self.crop.lower()} with base year {self.base_year[1:]}"
             + (
                 f"\nin scenario: {self.scenario_name}"
                 if self.scenario_name is not None
-                else "\n(no scenario)"
+                else ""
             )
             + (
                 " with country subset"
