@@ -7,7 +7,6 @@ import os
 from itertools import groupby
 import networkx as nx
 from matplotlib.axes import Axes
-from matplotlib.pyplot import rcParams
 from geopy.distance import geodesic
 from scipy.spatial.distance import squareform, pdist
 
