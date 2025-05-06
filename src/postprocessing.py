@@ -241,7 +241,7 @@ class Postprocessing:
                 ax,
                 scenario,
                 self.imports_difference[idx],
-                "Import relative difference [%]",
+                "Imports Relative Difference [%]",
                 shrink=shrink,
                 **kwargs,
             )
@@ -866,7 +866,7 @@ class Postprocessing:
                     if similarity
                     else {k: 1 - v for k, v in self.jaccard_indices[idx].items()}
                 ),
-                metric_name="Jaccard similarity" if similarity else "Jaccard distance",
+                metric_name="Jaccard Similarity" if similarity else "Jaccard Distance",
                 shrink=shrink,
                 **kwargs,
             )
