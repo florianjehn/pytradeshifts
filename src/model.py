@@ -907,3 +907,40 @@ class PyTradeShifts:
             dpi=300,
             bbox_inches="tight",
         )
+
+    def plot_reduced_production(self) -> None:
+        """
+        Plots the reduced production data on a world map.
+
+        Arguments:
+            None
+
+        Returns:
+            None
+        """
+        assert self.calculate_reduced_production is True
+        _, ax = plt.subplots(figsize=(10, 6))
+        # get the world map
+        world = prepare_world()
+        cc = coco.CountryConverter()
+        # Join the country_community dictionary to the world dataframe
+        world["reduced_production"] = world["names_short"].map(
+            self.reduced_production_data
+        )
+
+        # Plot the world map and color the countries according to their community
+        world.plot(
+            ax=ax,
+            column="reduced_production",
+            cmap="viridis",
+            missing_kwds={"color": "lightgrey"},
+            legend=True,
+            legend_kwds={
+                "label": "\nRemaining " + self.crop.title() + " Production in " + self.scenario_name.title() + " [t]",
+                "orientation": "horizontal",
+                "shrink": 0.5,
+                "pad": 0.1,
+            },
+        )
+
+        plot_winkel_tripel_map(ax)
