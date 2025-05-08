@@ -93,6 +93,7 @@ class PyTradeShifts:
         countries_to_remove=None,
         countries_to_keep=None,
         keep_singletons=False,
+        calculate_reduced_production=False,
         beta=0.0,
         make_plot=True,
         shade_removed_countries=True,
@@ -110,6 +111,7 @@ class PyTradeShifts:
         self.countries_to_remove = countries_to_remove
         self.countries_to_keep = countries_to_keep
         self.keep_singletons = keep_singletons
+        self.calculate_reduced_production = calculate_reduced_production
         self.beta = beta
         self.make_plot = make_plot
         self.shade_removed_countries = shade_removed_countries
@@ -627,6 +629,27 @@ class PyTradeShifts:
 
             # Multiply all the columns with the scenario data
             self.trade_matrix = self.trade_matrix.mul(scenario_data.values, axis=0)
+
+            if self.calculate_reduced_production:
+                # Now do the same checks for the production data and the scenario data 
+                # So we can also apply the scenario to the production data
+                # Only keep the countries that are in the production data and the scenario data
+                countries = np.intersect1d(
+                    self.production_data.index,
+                    scenario_data.index,
+                )
+                self.reduced_production_data = self.production_data.loc[countries]
+                scenario_data = scenario_data.loc[countries]
+                # Sort the indices
+                self.reduced_production_data = self.reduced_production_data.sort_index()
+                scenario_data = scenario_data.sort_index()
+                # Make sure the indices are the same
+                assert self.reduced_production_data.index.equals(scenario_data.index)
+                # Multiply the production data with the scenario data
+                self.reduced_production_data = self.reduced_production_data.mul(
+                    scenario_data.values
+                )
+
         else:
             # Multiply the trade matrix with the scenario data, but only for the countries
             # that are in the scenario data. Still keep all the countries in the trade matrix.
@@ -646,6 +669,26 @@ class PyTradeShifts:
 
             # Assert index consistency
             assert self.trade_matrix.index.equals(self.trade_matrix.columns)
+
+            if self.calculate_reduced_production:
+                # Now do the same checks for the production data and the scenario data
+                # So we can also apply the scenario to the production data
+                # Only keep the countries that are in the production data and the scenario data
+                countries = np.intersect1d(
+                    self.production_data.index,
+                    scenario_data.index,
+                )
+                self.reduced_production_data = self.production_data.loc[countries]
+                scenario_data = scenario_data.loc[countries]
+                # Sort the indices
+                self.reduced_production_data = self.reduced_production_data.sort_index()
+                scenario_data = scenario_data.sort_index()
+                # Make sure the indices are the same
+                assert self.reduced_production_data.index.equals(scenario_data.index)
+                # Multiply the production data with the scenario data
+                self.reduced_production_data = self.reduced_production_data.mul(
+                    scenario_data.values
+                )
 
         # Should be the same as before
         assert shape_before == self.trade_matrix.shape
