@@ -748,7 +748,7 @@ class Postprocessing:
                 axs[idx],
                 scenario,
                 in_degree,
-                "in-degree",
+                "In-Degree Centrality",
                 shrink=shrink,
                 **kwargs,
             )
@@ -756,7 +756,7 @@ class Postprocessing:
                 axs[idx + 1],
                 scenario,
                 out_degree,
-                "out-degree",
+                "Out-Degree Centrality",
                 shrink=shrink,
                 **kwargs,
             )
@@ -1929,6 +1929,7 @@ class Postprocessing:
                     ax=ax,
                     color=colors[idx],
                     alpha=alpha,
+                    linestyle="dotted"
                 )
         ax.set_xlabel("# of removed nodes.")
         ax.set_ylabel("Max adj. eigenval. post node removal.")
