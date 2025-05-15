@@ -631,7 +631,7 @@ class PyTradeShifts:
             self.trade_matrix = self.trade_matrix.mul(scenario_data.values, axis=0)
 
             if self.calculate_reduced_production:
-                # Now do the same checks for the production data and the scenario data 
+                # Now do the same checks for the production data and the scenario data
                 # So we can also apply the scenario to the production data
                 # Only keep the countries that are in the production data and the scenario data
                 countries = np.intersect1d(
@@ -936,7 +936,11 @@ class PyTradeShifts:
             missing_kwds={"color": "lightgrey"},
             legend=True,
             legend_kwds={
-                "label": "\nRemaining " + self.crop.title() + " Production in " + self.scenario_name.title() + " [t]",
+                "label": "\nRemaining "
+                + self.crop.title()
+                + " Production in "
+                + self.scenario_name.title()
+                + " [t]",
                 "orientation": "horizontal",
                 "shrink": 0.5,
                 "pad": 0.1,

@@ -1929,7 +1929,7 @@ class Postprocessing:
                     ax=ax,
                     color=colors[idx],
                     alpha=alpha,
-                    linestyle="dotted"
+                    linestyle="dotted",
                 )
         ax.set_xlabel("# of removed nodes.")
         ax.set_ylabel("Max adj. eigenval. post node removal.")
