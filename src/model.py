@@ -922,7 +922,6 @@ class PyTradeShifts:
         _, ax = plt.subplots(figsize=(10, 6))
         # get the world map
         world = prepare_world()
-        cc = coco.CountryConverter()
         # Join the country_community dictionary to the world dataframe
         world["reduced_production"] = world["names_short"].map(
             self.reduced_production_data
