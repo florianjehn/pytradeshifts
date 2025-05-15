@@ -122,6 +122,7 @@ class Postprocessing:
             self._arrange_communities()
         self._compute_imports()
         self._compute_imports_difference()
+        self._computer_import_difference_absolute()
         self._add_weight_reciprocals()
         self._find_community_difference()
         self._compute_frobenius_distance()
@@ -192,6 +193,30 @@ class Postprocessing:
                         ) * 100
             self.imports_difference.append(imports_difference)
 
+    def _computer_import_difference_absolute(self) -> None:
+        """
+        Computes the absolute difference in imports for each country in each scenario.
+        The difference is calculated relative to the base scenario.
+
+        Arguments:
+            None
+
+        Returns:
+            None
+        """
+        self.imports_difference_absolute = []
+        for imports in self.imports[1:]:
+            imports_difference = {}
+            for country in imports:
+                if country not in self.imports[0]:
+                    print(f"Warning: {country} not found in the base scenario.")
+                    imports_difference[country] = np.nan
+                else:
+                    imports_difference[country] = (
+                        imports[country] - self.imports[0][country]
+                    )
+            self.imports_difference_absolute.append(imports_difference)
+
     def plot_imports_difference(
         self,
         figsize: tuple[float, float] | None = None,
@@ -241,13 +266,60 @@ class Postprocessing:
                 ax,
                 scenario,
                 self.imports_difference[idx],
-                "Import relative difference [%]",
+                "Imports Relative Difference [%]",
                 shrink=shrink,
                 **kwargs,
             )
         if file_path:
             plt.savefig(
                 f"{file_path}{os.sep}import_diff.{file_format}",
+                dpi=dpi,
+                bbox_inches="tight",
+            )
+        else:
+            plt.show()
+
+    def plot_imports_difference_absolute(
+        self,
+        figsize: tuple[float, float] | None = None,
+        shrink=1.0,
+        file_path: str | None = None,
+        file_format="png",
+        dpi=300,
+        **kwargs,
+    ) -> None:
+        """
+        Plots the absolute imports difference for each scenario on a world map with the countries
+        coloured by the decrease in imports in absolute value.
+        """
+        assert len(self.scenarios) > 1
+        _, axs = plt.subplots(
+            len(self.scenarios) - 1,
+            1,
+            sharex=True,
+            tight_layout=True,
+            figsize=(
+                (5, (len(self.scenarios) - 1) * 2.5) if figsize is None else figsize
+            ),
+        )
+        # if there are only two scenarios axs will be just an ax object
+        # convert to a list to comply with other cases
+        try:
+            len(axs)
+        except TypeError:
+            axs = [axs]
+        for ax, (idx, scenario) in zip(axs, enumerate(self.scenarios[1:])):
+            plot_node_metric_map(
+                ax,
+                scenario,
+                self.imports_difference_absolute[idx],
+                "Imports Absolute Difference [t]",
+                shrink=shrink,
+                **kwargs,
+            )
+        if file_path:
+            plt.savefig(
+                f"{file_path}{os.sep}import_diff_abs.{file_format}",
                 dpi=dpi,
                 bbox_inches="tight",
             )
@@ -676,7 +748,7 @@ class Postprocessing:
                 axs[idx],
                 scenario,
                 in_degree,
-                "in-degree",
+                "In-Degree Centrality",
                 shrink=shrink,
                 **kwargs,
             )
@@ -684,7 +756,7 @@ class Postprocessing:
                 axs[idx + 1],
                 scenario,
                 out_degree,
-                "out-degree",
+                "Out-Degree Centrality",
                 shrink=shrink,
                 **kwargs,
             )
@@ -866,7 +938,7 @@ class Postprocessing:
                     if similarity
                     else {k: 1 - v for k, v in self.jaccard_indices[idx].items()}
                 ),
-                metric_name="Jaccard similarity" if similarity else "Jaccard distance",
+                metric_name="Jaccard Similarity" if similarity else "Jaccard Distance",
                 shrink=shrink,
                 **kwargs,
             )
@@ -1857,6 +1929,7 @@ class Postprocessing:
                     ax=ax,
                     color=colors[idx],
                     alpha=alpha,
+                    linestyle="dotted"
                 )
         ax.set_xlabel("# of removed nodes.")
         ax.set_ylabel("Max adj. eigenval. post node removal.")

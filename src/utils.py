@@ -288,7 +288,7 @@ def plot_node_metric_map(
 
     # Add a title with self.scenario_name if applicable
     ax.set_title(
-        f"{metric_name.replace(' [%]', '')} for {scenario.crop.lower()} with base year {scenario.base_year[1:]}"
+        f"{metric_name.replace(' [%]', '').replace(" [t]", "")} for {scenario.crop.lower()} with base year {scenario.base_year[1:]}"
         + (
             f"\nin scenario: {scenario.scenario_name}"
             if scenario.scenario_name is not None
