@@ -170,7 +170,7 @@ class PyTradeShifts:
         if exiting is not None:
             print(exiting)
             return
-        if self.scenario_name is not None:
+        if self.scenario_name is not None and self.scenario_file_name is not None:
             self.apply_scenario()
         # apply the distance cost only if beta != 0
         # for beta==0 there is no change in values
