@@ -35,4 +35,4 @@ where = ["."]
 include = ["src*"]
 
 [tool.uv.extra-build-dependencies]
-infomap = ["setuptools"]
+infomap = ["setuptools<75"]
