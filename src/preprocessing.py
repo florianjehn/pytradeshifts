@@ -291,17 +291,32 @@ def rename_countries(
     except KeyError:
         rc_bytes = zip_file.open(filename + "_ReporterCountries.csv").read()
         try:
-            codes = pd.read_csv(pd.io.common.BytesIO(rc_bytes), encoding="utf-8", low_memory=False)
+            codes = pd.read_csv(
+                pd.io.common.BytesIO(rc_bytes), encoding="utf-8", low_memory=False
+            )
         except UnicodeDecodeError:
-            codes = pd.read_csv(pd.io.common.BytesIO(rc_bytes), encoding="latin1", low_memory=False)
-        codes = codes.rename(columns={"Reporter Countries": "Area", "Reporter Country Code": "Area Code"})
+            codes = pd.read_csv(
+                pd.io.common.BytesIO(rc_bytes), encoding="latin1", low_memory=False
+            )
+        codes = codes.rename(
+            columns={"Reporter Countries": "Area", "Reporter Country Code": "Area Code"}
+        )
         try:
             pc_bytes = zip_file.open(filename + "_PartnerCountries.csv").read()
             try:
-                partner = pd.read_csv(pd.io.common.BytesIO(pc_bytes), encoding="utf-8", low_memory=False)
+                partner = pd.read_csv(
+                    pd.io.common.BytesIO(pc_bytes), encoding="utf-8", low_memory=False
+                )
             except UnicodeDecodeError:
-                partner = pd.read_csv(pd.io.common.BytesIO(pc_bytes), encoding="latin1", low_memory=False)
-            partner = partner.rename(columns={"Partner Countries": "Area", "Partner Country Code": "Area Code"})
+                partner = pd.read_csv(
+                    pd.io.common.BytesIO(pc_bytes), encoding="latin1", low_memory=False
+                )
+            partner = partner.rename(
+                columns={
+                    "Partner Countries": "Area",
+                    "Partner Country Code": "Area Code",
+                }
+            )
             codes = pd.concat([codes, partner]).drop_duplicates(subset=["Area Code"])
         except KeyError:
             pass
