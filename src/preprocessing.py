@@ -84,7 +84,7 @@ def serialise_faostat_bulk(faostat_zip: str) -> None:
 
 
 def _prep_trade_matrix(
-    trade_pkl: str, item: str, unit="t", element="Export Quantity", year="Y2018"
+    trade_pkl: str, item: str, unit="t", element="Export quantity", year="Y2018"
 ) -> pd.DataFrame:
     """
     Return properly formatted trade matrix.
@@ -215,7 +215,7 @@ def format_prod_trad_data(
     item: str,
     production_unit="t",
     trade_unit="t",
-    element="Export Quantity",
+    element="Export quantity",
     year="Y2018",
 ) -> tuple[pd.Series, pd.DataFrame]:
     """
@@ -271,24 +271,34 @@ def rename_countries(
     # Read in the country codes from the zip file
     faostat_zip = f"data{os.sep}data_raw{os.sep}{filename}_{region}.zip"
     zip_file = ZipFile(faostat_zip)
-    # Open the csv file in the zip Production_Crops_Livestock_E_AreaCodes.csv
-    # and read it into a dataframe
-    codes = pd.read_csv(
-        zip_file.open(filename + "_AreaCodes.csv"),
-        encoding="latin1",
-        low_memory=False,
-    )
+    # Try the standard AreaCodes file first; fall back to ReporterCountries
+    # (used in newer FAOSTAT Trade bulk downloads)
+    try:
+        codes = pd.read_csv(
+            zip_file.open(filename + "_AreaCodes.csv"),
+            encoding="latin1",
+            low_memory=False,
+        )
+        area_col = "Area"
+    except KeyError:
+        codes = pd.read_csv(
+            zip_file.open(filename + "_ReporterCountries.csv"),
+            encoding="latin1",
+            low_memory=False,
+        )
+        codes = codes.rename(columns={"Reporter Countries": "Area"})
+        area_col = "Area"
     # Rename a bunch of countries which cause trouble, because they map onto
     # different states now
     # rename China; Taiwan Province of to Taiwan
-    codes.loc[codes["Area"] == "China; Taiwan Province of", "Area"] = "Taiwan"
-    codes.loc[codes["Area"] == "Serbia and Montenegro", "Area"] = "Serbia"
-    codes.loc[codes["Area"] == "Belgium-Luxembourg", "Area"] = "Belgium"
+    codes.loc[codes[area_col] == "China; Taiwan Province of", area_col] = "Taiwan"
+    codes.loc[codes[area_col] == "Serbia and Montenegro", area_col] = "Serbia"
+    codes.loc[codes[area_col] == "Belgium-Luxembourg", area_col] = "Belgium"
 
     # Create a dictionary with the country codes as keys and country names as values
     cc = coco.CountryConverter()
     codes_area_short = cc.pandas_convert(
-        pd.Series(codes["Area"]), to="name_short", not_found=None
+        pd.Series(codes[area_col]), to="name_short", not_found=None
     )
 
     codes_dict = dict(zip(codes[code_type], codes_area_short))
@@ -375,7 +385,7 @@ def main(
     item: str,
     production_unit="t",
     trade_unit="t",
-    element="Export Quantity",
+    element="Export quantity",
     year="Y2018",
 ) -> None:
     try:
@@ -424,9 +434,12 @@ def main(
             year,
         )
 
-    # Replace country codes with country names
-    trade_matrix = rename_countries(trade_matrix, region, "Trade_DetailedTradeMatrix_E")
-    production = rename_countries(production, region, "Production_Crops_Livestock_E")
+    # Replace country codes with country names.
+    # Use Production AreaCodes for both, as it is the comprehensive FAOSTAT area list
+    # and newer Trade bulk downloads no longer include a complete AreaCodes file.
+    production_lookup = "Production_Crops_Livestock_E"
+    trade_matrix = rename_countries(trade_matrix, region, production_lookup)
+    production = rename_countries(production, region, production_lookup)
 
     # Rename the item for readability
     item = rename_item(item)
@@ -458,13 +471,13 @@ def main(
 
 if __name__ == "__main__":
     # Define values
-    year = "Y2018"
+    year = "Y2023"
     items_trade = ["Maize (corn)", "Wheat", "Rice, paddy (rice milled equivalent)"]
     # items_trade = ["Wheat"]
     # Define regions for which the data is processed
     # "Oceania" is used for testing, as it has the least amount of countries
     # to run with all data use: "All_Data" for region
-    region = "Oceania"
+    region = "All_Data"
     print("\n")
     for item in items_trade:
         main(
