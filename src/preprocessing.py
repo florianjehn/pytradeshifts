@@ -458,13 +458,13 @@ def main(
 
 if __name__ == "__main__":
     # Define values
-    year = "Y2018"
+    year = "Y2023"
     items_trade = ["Maize (corn)", "Wheat", "Rice, paddy (rice milled equivalent)"]
     # items_trade = ["Wheat"]
     # Define regions for which the data is processed
     # "Oceania" is used for testing, as it has the least amount of countries
     # to run with all data use: "All_Data" for region
-    region = "Oceania"
+    region = "All_Data"
     print("\n")
     for item in items_trade:
         main(
