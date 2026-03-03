@@ -24,8 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           git lfs pull
-          uv pip install setuptools
-          uv sync --extra dev --no-build-isolation-package infomap
+          uv sync --extra dev
       - name: Test with pytest
         run: |
           uv run pytest
