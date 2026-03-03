@@ -28,7 +28,6 @@ import os
 from pathlib import Path
 from datetime import datetime, timezone
 
-
 plt.style.use(
     "https://raw.githubusercontent.com/allfed/ALLFED-matplotlib-style-sheet/main/ALLFED.mplstyle"
 )
