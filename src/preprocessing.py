@@ -274,19 +274,37 @@ def rename_countries(
     # Try the standard AreaCodes file first; fall back to ReporterCountries
     # (used in newer FAOSTAT Trade bulk downloads)
     try:
-        codes = pd.read_csv(
-            zip_file.open(filename + "_AreaCodes.csv"),
-            encoding="latin1",
-            low_memory=False,
-        )
+        csv_bytes = zip_file.open(filename + "_AreaCodes.csv").read()
+        try:
+            codes = pd.read_csv(
+                pd.io.common.BytesIO(csv_bytes),
+                encoding="utf-8",
+                low_memory=False,
+            )
+        except UnicodeDecodeError:
+            codes = pd.read_csv(
+                pd.io.common.BytesIO(csv_bytes),
+                encoding="latin1",
+                low_memory=False,
+            )
         area_col = "Area"
     except KeyError:
-        codes = pd.read_csv(
-            zip_file.open(filename + "_ReporterCountries.csv"),
-            encoding="latin1",
-            low_memory=False,
-        )
-        codes = codes.rename(columns={"Reporter Countries": "Area"})
+        rc_bytes = zip_file.open(filename + "_ReporterCountries.csv").read()
+        try:
+            codes = pd.read_csv(pd.io.common.BytesIO(rc_bytes), encoding="utf-8", low_memory=False)
+        except UnicodeDecodeError:
+            codes = pd.read_csv(pd.io.common.BytesIO(rc_bytes), encoding="latin1", low_memory=False)
+        codes = codes.rename(columns={"Reporter Countries": "Area", "Reporter Country Code": "Area Code"})
+        try:
+            pc_bytes = zip_file.open(filename + "_PartnerCountries.csv").read()
+            try:
+                partner = pd.read_csv(pd.io.common.BytesIO(pc_bytes), encoding="utf-8", low_memory=False)
+            except UnicodeDecodeError:
+                partner = pd.read_csv(pd.io.common.BytesIO(pc_bytes), encoding="latin1", low_memory=False)
+            partner = partner.rename(columns={"Partner Countries": "Area", "Partner Country Code": "Area Code"})
+            codes = pd.concat([codes, partner]).drop_duplicates(subset=["Area Code"])
+        except KeyError:
+            pass
         area_col = "Area"
     # Rename a bunch of countries which cause trouble, because they map onto
     # different states now
