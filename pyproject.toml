@@ -35,4 +35,4 @@ where = ["."]
 include = ["src*"]
 
 [tool.uv.extra-build-dependencies]
-infomap = ["pkg_resources"]
+infomap = ["setuptools<75"]
