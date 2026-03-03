@@ -84,7 +84,7 @@ def serialise_faostat_bulk(faostat_zip: str) -> None:
 
 
 def _prep_trade_matrix(
-    trade_pkl: str, item: str, unit="t", element="Export Quantity", year="Y2018"
+    trade_pkl: str, item: str, unit="t", element="Export quantity", year="Y2018"
 ) -> pd.DataFrame:
     """
     Return properly formatted trade matrix.
@@ -215,7 +215,7 @@ def format_prod_trad_data(
     item: str,
     production_unit="t",
     trade_unit="t",
-    element="Export Quantity",
+    element="Export quantity",
     year="Y2018",
 ) -> tuple[pd.Series, pd.DataFrame]:
     """
@@ -385,7 +385,7 @@ def main(
     item: str,
     production_unit="t",
     trade_unit="t",
-    element="Export Quantity",
+    element="Export quantity",
     year="Y2018",
 ) -> None:
     try:
@@ -471,7 +471,7 @@ def main(
 
 if __name__ == "__main__":
     # Define values
-    year = "Y2022"
+    year = "Y2023"
     items_trade = ["Maize (corn)", "Wheat", "Rice, paddy (rice milled equivalent)"]
     # items_trade = ["Wheat"]
     # Define regions for which the data is processed
