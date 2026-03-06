@@ -52,11 +52,20 @@ def read_faostat_bulk(faostat_zip: str) -> pd.DataFrame:
     zip_file = ZipFile(faostat_zip)
     print("Finished unzipping file")
     print("Reading csv from zip")
-    df = pd.read_csv(
-        zip_file.open(faostat_zip[faostat_zip.rfind("/") + 1 :].replace("zip", "csv")),
-        encoding="latin1",
-        low_memory=False,
-    )
+    csv_name = faostat_zip[faostat_zip.rfind("/") + 1 :].replace("zip", "csv")
+    csv_bytes = zip_file.open(csv_name).read()
+    try:
+        df = pd.read_csv(
+            pd.io.common.BytesIO(csv_bytes),
+            encoding="utf-8",
+            low_memory=False,
+        )
+    except UnicodeDecodeError:
+        df = pd.read_csv(
+            pd.io.common.BytesIO(csv_bytes),
+            encoding="latin1",
+            low_memory=False,
+        )
     print("Finished reading csv from zip")
     return df
 
