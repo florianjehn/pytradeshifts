@@ -230,6 +230,24 @@ class TestPostprocessing:
             ]
         )
 
+    def test_compute_import_change_as_fraction_of_consumption(
+        self, postprocessing_object
+    ) -> None:
+        # Build a consumption Series from the base scenario's trade matrix
+        # (use column sums as a stand-in for "consumption" so every country has data)
+        base_trade = postprocessing_object.scenarios[0].trade_matrix
+        consumption = base_trade.sum(axis=0)
+        # Replace zeros to avoid NaN results
+        consumption = consumption.replace(0, 1)
+
+        postprocessing_object.consumption_data = consumption
+        postprocessing_object._compute_import_change_as_fraction_of_consumption()
+
+        result = postprocessing_object.import_change_as_fraction_of_consumption
+        assert result is not None
+        assert len(result) == len(postprocessing_object.scenarios) - 1
+        assert all(isinstance(result[0][c], float) for c in result[0])
+
 
 def test_find_new_order() -> None:
     """

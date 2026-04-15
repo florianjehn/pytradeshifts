@@ -422,6 +422,93 @@ def remove_entries_from_data(
     return data
 
 
+def prep_fbs_consumption(
+    fbs_pkl: str,
+    item: str,
+    element: str = "Food",
+    year: str = "Y2018",
+    fallback_to_latest: bool = True,
+) -> pd.Series:
+    """
+    Return a Series of per-country domestic food consumption from an FAO Food
+    Balance Sheet (FBS) bulk-download file.
+
+    The FBS data can be downloaded from:
+    https://www.fao.org/faostat/en/#data/FBS
+
+    Use `serialise_faostat_bulk()` to convert the downloaded zip to a pickle
+    before calling this function.
+
+    Arguments:
+        fbs_pkl (str): Path to the FBS pickle file.
+        item (str): FBS item name to filter for, e.g.
+            "Wheat and products", "Maize and products",
+            "Rice and products", "Soya beans".
+        element (str): FBS element to use as consumption proxy.
+            "Food" (default) is the quantity used for human food consumption.
+            "Domestic supply quantity" is total availability
+            (production + imports − exports ± stock changes).
+        year (str): Year column to extract, e.g. "Y2018".
+        fallback_to_latest (bool): If True (default), countries whose value is
+            NaN in `year` are filled with their most recent non-NaN value from
+            any earlier year in the dataset. Useful when the FAO stops reporting
+            certain countries in the most recent years.
+
+    Returns:
+        pd.Series: Consumption values in tonnes indexed by short country name.
+            FBS figures are stored in 1 000 t and are converted to tonnes here.
+    """
+    fbs = pd.read_pickle(fbs_pkl)
+
+    assert element in fbs["Element"].unique(), (
+        f"element '{element}' not found. Available: {fbs['Element'].unique()}"
+    )
+    assert item in fbs["Item"].unique(), (
+        f"item '{item}' not found. Available: {fbs['Item'].unique()}"
+    )
+    assert year in fbs.columns, (
+        f"year column '{year}' not found in FBS data."
+    )
+
+    fbs = fbs[(fbs["Item"] == item) & (fbs["Element"] == element)]
+
+    # Year columns are named "Y<year>" (without flags like "Y2018F")
+    year_cols = [c for c in fbs.columns if c.startswith("Y") and c[1:].isdigit()]
+
+    if fallback_to_latest:
+        # For each row, use `year` if available; otherwise the most recent non-NaN year
+        earlier_years = sorted([c for c in year_cols if c < year])
+        fbs = fbs[["Area Code (M49)"] + year_cols].copy()
+        fbs = fbs.set_index("Area Code (M49)")
+        fbs = remove_entries_from_data(fbs)
+        # Fill NaN in the requested year from the most recent available year
+        values = fbs[year].copy()
+        for col in reversed(earlier_years):
+            values = values.where(values.notna(), fbs[col])
+        consumption = values.dropna()
+    else:
+        fbs = fbs[~fbs[year].isna()]
+        fbs = fbs[["Area Code (M49)", year]].copy()
+        fbs = fbs.set_index("Area Code (M49)")
+        fbs = remove_entries_from_data(fbs)
+        consumption = fbs[year].squeeze().dropna()
+
+    # FBS values are in 1 000 t — convert to tonnes to match trade data
+    consumption = consumption * 1_000
+
+    # Convert M49 numeric codes to short country names
+    cc = coco.CountryConverter()
+    consumption.index = cc.pandas_convert(
+        pd.Series(consumption.index.astype(str).str.lstrip("'").astype(int)),
+        to="name_short",
+        not_found=None,
+    )
+    # Drop rows where the code could not be mapped to a country name
+    consumption = consumption[consumption.index.notna()]
+
+    return consumption
+
+
 def main(
     region: str,
     item: str,
