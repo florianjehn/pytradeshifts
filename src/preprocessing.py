@@ -460,15 +460,13 @@ def prep_fbs_consumption(
     """
     fbs = pd.read_pickle(fbs_pkl)
 
-    assert element in fbs["Element"].unique(), (
-        f"element '{element}' not found. Available: {fbs['Element'].unique()}"
-    )
-    assert item in fbs["Item"].unique(), (
-        f"item '{item}' not found. Available: {fbs['Item'].unique()}"
-    )
-    assert year in fbs.columns, (
-        f"year column '{year}' not found in FBS data."
-    )
+    assert (
+        element in fbs["Element"].unique()
+    ), f"element '{element}' not found. Available: {fbs['Element'].unique()}"
+    assert (
+        item in fbs["Item"].unique()
+    ), f"item '{item}' not found. Available: {fbs['Item'].unique()}"
+    assert year in fbs.columns, f"year column '{year}' not found in FBS data."
 
     fbs = fbs[(fbs["Item"] == item) & (fbs["Element"] == element)]
 
