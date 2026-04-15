@@ -60,6 +60,20 @@ class Postprocessing:
         random_attack_sample_size: (int, optional): Specifies the number of times
             to conduct random attack on the network. The higher the number the lower
             the uncertainty but higher computation time. Must be >= 2.
+        consumption_data (pd.Series | None, optional): Series indexed by country name
+            with domestic food consumption in tonnes. When provided, enables
+            `plot_import_change_as_fraction_of_consumption`. Use
+            `preprocessing.prep_fbs_consumption()` to build this Series from an
+            FAO Food Balance Sheet bulk-download file.
+        compute_efficiency (bool, optional): Whether to compute graph efficiency
+            (used by `print_network_metrics`). Expensive — O(N²) all-pairs Dijkstra.
+            Default True.
+        compute_node_stability (bool, optional): Whether to compute node and network
+            stability (used by `plot_node_stability`). Expensive — requires computing
+            the full pairwise geodesic distance matrix. Default True.
+        compute_percolation (bool, optional): Whether to compute percolation thresholds
+            (used by `plot_attack_resilience`). Expensive — runs
+            `random_attack_sample_size` × N eigenvalue decompositions. Default True.
         testing (bool, optional): Whether to run the methods or not. This is only used for
             testing purposes.
 
@@ -75,6 +89,10 @@ class Postprocessing:
         stability_index_file=f"data{os.sep}stability_index{os.sep}worldbank_governence_indicator_2022_normalised.csv",
         gamma=1.0,
         random_attack_sample_size=100,
+        consumption_data: pd.Series | None = None,
+        compute_efficiency=True,
+        compute_node_stability=True,
+        compute_percolation=True,
         testing=False,
     ):
         self.scenarios = scenarios
@@ -82,6 +100,7 @@ class Postprocessing:
         # and the code more complicated, let's just inform in the docs
         # that the first passed scenario is considered the base
         self.anchor_countries = anchor_countries
+        self.consumption_data = consumption_data
         # check if community detection is uniform for all objects
         # there might be a case where it is desired so we allow it
         # but most times this is going to be undesirable hence the warning
@@ -94,6 +113,9 @@ class Postprocessing:
         self.stability_index_file = stability_index_file
         self.gamma = gamma
         self.random_attack_sample_size = random_attack_sample_size
+        self.compute_efficiency = compute_efficiency
+        self.compute_node_stability = compute_node_stability
+        self.compute_percolation = compute_percolation
         assert self.random_attack_sample_size >= 2
         if not testing:
             self.run()
@@ -122,6 +144,8 @@ class Postprocessing:
         self._compute_imports()
         self._compute_imports_difference()
         self._computer_import_difference_absolute()
+        if self.consumption_data is not None:
+            self._compute_import_change_as_fraction_of_consumption()
         self._add_weight_reciprocals()
         self._find_community_difference()
         self._compute_frobenius_distance()
@@ -133,16 +157,28 @@ class Postprocessing:
         self._compute_community_centrality_metrics()
         self._compute_community_satisfaction()
         self._compute_community_satisfaction_difference()
-        self._compute_efficiency()
+        if self.compute_efficiency:
+            self._compute_efficiency()
+        else:
+            self.efficiency = []
         self._compute_clustering_coefficient()
         self._compute_betweenness_centrality()
         self._compute_within_community_degree()
         self._compute_participation()
-        self._compute_node_stability()
-        self._compute_node_stability_difference()
-        self._compute_network_stability()
-        self._compute_entropic_out_degree()
-        self._compute_percolation_threshold()
+        if self.compute_node_stability:
+            self._compute_node_stability()
+            self._compute_node_stability_difference()
+            self._compute_network_stability()
+        else:
+            self.node_stability = []
+            self.node_stability_difference = []
+            self.network_stability = None
+        if self.compute_percolation:
+            self._compute_entropic_out_degree()
+            self._compute_percolation_threshold()
+        else:
+            self.entropic_out_degree = []
+            self.percolation = []
 
     def _compute_imports(self) -> None:
         """
@@ -319,6 +355,115 @@ class Postprocessing:
         if file_path:
             plt.savefig(
                 f"{file_path}{os.sep}import_diff_abs.{file_format}",
+                dpi=dpi,
+                bbox_inches="tight",
+            )
+        else:
+            plt.show()
+
+    def _compute_import_change_as_fraction_of_consumption(self) -> None:
+        """
+        For each non-base scenario, computes the change in imports relative to the
+        base scenario expressed as a fraction (%) of domestic consumption.
+
+        The metric answers: "by how many percentage points of normal consumption
+        does this scenario increase or decrease a country's imports?"
+
+        Formula:
+            (imports_scenario - imports_base) / consumption * 100
+
+        Countries with missing consumption data are assigned NaN.
+
+        Arguments:
+            None
+
+        Returns:
+            None
+        """
+        self.import_change_as_fraction_of_consumption = []
+        for imports in self.imports[1:]:
+            result = {}
+            # Iterate over base countries so that countries dropped from the
+            # scenario (e.g. because percentile filtering zeroed their trade)
+            # are still represented with a 0-import scenario value.
+            for country in self.imports[0]:
+                consumption = self.consumption_data.get(country, np.nan)
+                if pd.isna(consumption) or consumption == 0:
+                    result[country] = np.nan
+                else:
+                    scenario_imports = imports.get(country, 0)
+                    result[country] = (
+                        (scenario_imports - self.imports[0][country]) / consumption
+                    ) * 100
+            self.import_change_as_fraction_of_consumption.append(result)
+
+    def plot_import_change_as_fraction_of_consumption(
+        self,
+        figsize: tuple[float, float] | None = None,
+        shrink=1.0,
+        file_path: str | None = None,
+        file_format="png",
+        dpi=300,
+        **kwargs,
+    ) -> None:
+        """
+        Plots a world map for each non-base scenario where countries are coloured
+        by how large the scenario-induced import change is relative to domestic
+        food consumption (%).
+
+        A value of -5 means a country's imports fell by an amount equivalent to
+        5 % of its normal domestic consumption.
+
+        Requires `consumption_data` to have been passed to the Postprocessing
+        constructor.
+
+        Arguments:
+            figsize (tuple[float, float] | None, optional): The composite figure
+                size as expected by the matplotlib subplots routine.
+            shrink (float, optional): Colour bar shrink parameter.
+            file_path (str | None, optional): Path to where the image file
+                should be saved to. If `None` no file shall be produced.
+            file_format (str, optional): File extension to use when
+                saving plot to file.
+            dpi (int, optional): DPI of the saved image file.
+            **kwargs (optional): Any additional keyworded arguments recognised
+                by geopandas plot function.
+
+        Returns:
+            None
+        """
+        assert len(self.scenarios) > 1
+        assert self.consumption_data is not None, (
+            "No consumption data available. Pass a consumption_data Series to "
+            "Postprocessing to enable this plot."
+        )
+        _, axs = plt.subplots(
+            len(self.scenarios) - 1,
+            1,
+            sharex=True,
+            tight_layout=True,
+            figsize=(
+                (5, (len(self.scenarios) - 1) * 2.5) if figsize is None else figsize
+            ),
+        )
+        # if there are only two scenarios axs will be just an ax object
+        # convert to a list to comply with other cases
+        try:
+            len(axs)
+        except TypeError:
+            axs = [axs]
+        for ax, (idx, scenario) in zip(axs, enumerate(self.scenarios[1:])):
+            plot_node_metric_map(
+                ax,
+                scenario,
+                self.import_change_as_fraction_of_consumption[idx],
+                "Import Change as Fraction of Consumption [%]",
+                shrink=shrink,
+                **kwargs,
+            )
+        if file_path:
+            plt.savefig(
+                f"{file_path}{os.sep}import_change_fraction_consumption.{file_format}",
                 dpi=dpi,
                 bbox_inches="tight",
             )
