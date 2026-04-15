@@ -383,17 +383,17 @@ class Postprocessing:
         self.import_change_as_fraction_of_consumption = []
         for imports in self.imports[1:]:
             result = {}
-            for country in imports:
-                if country not in self.imports[0]:
-                    print(f"Warning: {country} not found in the base scenario.")
-                    result[country] = np.nan
-                    continue
+            # Iterate over base countries so that countries dropped from the
+            # scenario (e.g. because percentile filtering zeroed their trade)
+            # are still represented with a 0-import scenario value.
+            for country in self.imports[0]:
                 consumption = self.consumption_data.get(country, np.nan)
                 if pd.isna(consumption) or consumption == 0:
                     result[country] = np.nan
                 else:
+                    scenario_imports = imports.get(country, 0)
                     result[country] = (
-                        (imports[country] - self.imports[0][country]) / consumption
+                        (scenario_imports - self.imports[0][country]) / consumption
                     ) * 100
             self.import_change_as_fraction_of_consumption.append(result)
 
