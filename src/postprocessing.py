@@ -312,7 +312,7 @@ class Postprocessing:
                 ax,
                 scenario,
                 self.imports_difference_absolute[idx],
-                "Imports Absolute Difference [t]",
+                "Imports Difference [t]",
                 shrink=shrink,
                 **kwargs,
             )
