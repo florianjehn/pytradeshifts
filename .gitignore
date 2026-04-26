@@ -130,4 +130,8 @@ dmypy.json
 
 *.pkl
 
+# Claude Code local settings
+.claude/
 
+# Large raw FAO data files not tracked in git
+data/data_raw/FoodBalanceSheets_E_All_Data.zip
