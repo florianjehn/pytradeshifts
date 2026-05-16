@@ -1725,6 +1725,11 @@ dev = [
     { name = "pytest" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "country-converter", specifier = "==1.2" },
@@ -1746,6 +1751,9 @@ requires-dist = [
     { name = "tabulate", specifier = "==0.9.0" },
 ]
 provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=7.4.3" }]
 
 [[package]]
 name = "pytz"
